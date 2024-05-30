@@ -9,7 +9,7 @@
 typedef struct _node {
     int data;
     struct _node *next;
-
+    struct _node *prev;
 }node;
 
 
@@ -17,11 +17,14 @@ typedef struct _node {
 void insert_data(node *temp, node *s) {
     temp->next = s->next;
     s->next = temp;
+    temp->prev = s;
+    temp->next->prev = temp; // 1이 1을 가리키게 하는 유일한 포인터
+
 }
 
-void display(node *s, node *tail) {
+void display(node *s) {
     node *temp;
-    for (temp = s->next; temp != tail; temp=temp->next) {
+    for (temp = s->prev; temp != s; temp=temp->prev) {
         printf("->[%d]", temp->data); // (*temp).data
     }
     printf("->[tail]\n");
@@ -31,14 +34,13 @@ void display(node *s, node *tail) {
 
 
 int main() {
-    node tail = {0, &tail};
-    node s = {0, &tail};
+    node s = {0, &s, &s};
     
     node temps[7];
     for (int i = 0; i<7; i++) {
         temps[i].data = i+1;
-        display(&s, &tail);
         insert_data(temps+i, &s);
+        display(&s);
     }
     return 0;
 }   
